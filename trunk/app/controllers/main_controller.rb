@@ -33,6 +33,8 @@ class MainController < ApplicationController
   #
   # 2008-11-01 - Ruby File Created (RMT)
   # 2008-11-08 - Transplanted Ruby script into a Rails application (RMT)
+  # 2008-12-01 - Included GPL text
+  # 2008-12-01 - Adjusted stride length for stepcount
   
   def upload
     uploaded_file = params[:TcxFile]
@@ -114,7 +116,7 @@ class MainController < ApplicationController
       numWalkBegin = 1
       numWalkEnd = 1 # I didn't walk, bro, I ran!
       numRunBegin = 1
-      numRunEnd = (numTotalDistance / 1.2).to_i # Assuming a 1.5m stride (http://wiki.answers.com/Q/What_is_the_average_mans_running_stride_length)
+      numRunEnd = (numTotalDistance / 1.5).to_i # Assuming a 1.5m stride (http://wiki.answers.com/Q/What_is_the_average_mans_running_stride_length)
 
       # Miscellaneous data - Some are dummy, some are real
       strTemplateID = params[:TemplateID]  # Put your template ID here
