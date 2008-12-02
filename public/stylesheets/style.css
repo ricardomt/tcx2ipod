@@ -1,0 +1,87 @@
+body {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	background: #eeeeee;
+	font-size: 12px;
+	color: #000000;	
+}
+
+div.yui-t7 {
+	background: #ffffff;
+	border: 1px solid #999999;
+} 
+
+div.padded-body {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 20px;  
+  padding-bottom: 20px;
+}
+
+#hd {
+	border-bottom: 1px solid #999999;
+}
+ 
+h1 {
+	padding-left: 10px;
+	padding-top: 10px;
+	color: #000000;
+	font-size: 20px;
+}
+
+h2 {
+	padding-left: 10px;
+	padding-top: 10px;
+	color: #000000;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+p {
+	padding-top: 0px;
+	padding-bottom: 10px;
+	padding-left:10px;
+	padding-right: 10px;
+	font-size: 12px;
+}
+
+td {
+	padding-left: 10px;
+	padding-bottom: 10px;
+}
+
+ul {
+	padding-left:40px;
+}
+
+li { 
+	color: #000000;
+	list-style-type: circle;
+	list-style-position: outside;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	padding-bottom: 5px;
+}
+
+input {
+	margin: 2px;
+	font-size: 12px;	
+}
+
+pre {
+	padding-top: 0px;
+	padding-bottom: 10px;
+	padding-left:10px;
+	padding-right: 10px;
+	font-size: 11px;
+	color: #666666;
+	font-family: Courier, serif;
+}
+
+strong {
+	font-weight: bold;
+}
+
+a {
+	color:#3366aa;
+}
+
