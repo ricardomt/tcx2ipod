@@ -35,6 +35,7 @@ class MainController < ApplicationController
   # 2008-11-08 - Transplanted Ruby script into a Rails application (RMT)
   # 2008-12-01 - Included GPL text
   # 2008-12-01 - Adjusted stride length for stepcount
+  # 2008-12-03 - Included handler for empty device name information on TCX (Mac TC)
   
   def upload
     uploaded_file = params[:TcxFile]
@@ -123,7 +124,16 @@ class MainController < ApplicationController
       strTemplateName = params[:TemplateName]   # I am always using basic for this script
       strEmpedID = params[:EmpedID]     # Put your EMPED ID here
       strWeight = params[:Weight]          # Put your actual weight here
-      strDevice = root.elements["Activities/Activity/Creator/Name"].text + " - Converted by 7runs.com"                    # Gets the Creator Name from the Garmin XML
+
+      # Gets the device identifier
+      if root.elements["Activities/Activity/Creator/Name"] != nil then
+        # Gets the Creator Name from the Garmin XML
+        strDevice = root.elements["Activities/Activity/Creator/Name"].text + " - Converted by 7runs.com"
+      else
+        # Unknown Garmin Device
+        strDevice = "Unknown Garmin Device - Converted by 7runs.com"
+      end
+
       strCalibration = params[:Calibration]   # Calibration data from a valid iPod XML
 
       # Converts Trackpoint stream into Ruby Array
