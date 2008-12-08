@@ -35,7 +35,9 @@ class MainController < ApplicationController
   # 2008-11-08 - Transplanted Ruby script into a Rails application (RMT)
   # 2008-12-01 - Included GPL text
   # 2008-12-01 - Adjusted stride length for stepcount
-  # 2008-12-03 - Included handler for empty device name information on TCX (Mac TC)
+  # 2008-12-03 - Included handler for empty device name information on TCX (Ascent Export)
+  # 2008-12-07 - Fixed issue #1 (Unknown device name) - for both "no device name" and "device name element empty" scenarios
+  # 2008-12-07 - Fixed issues #2 (Timestamps discrepancies) and #3 (Weight conversion issue)
   
   def upload
     uploaded_file = params[:TcxFile]
@@ -51,7 +53,49 @@ class MainController < ApplicationController
       strRunSummaryWorkoutName = params[:TemplateName]
       strPlaylistName = params[:PlaylistName]
       # Included GMT offset - My Forerunner is set to record GMT hours
+      # Looks like the Forerunner will always record UTC in the XML. Client must correct TZ offset
       strRunSummaryTime = root.elements["Activities/Activity/Id"].text
+      timZuluTime = Time.parse(strRunSummaryTime)
+      
+      strTZOffset = params[:TimeZoneOffset]
+      
+      intOffset = case strTZOffset
+        when "GMT-1200" : -43200
+        when "GMT-1100" : -39600
+        when "GMT-1000" : -36000
+        when "GMT-0900" : -32400
+        when "GMT-0800" : -28800
+        when "GMT-0700" : -25200
+        when "GMT-0600" : -21600
+        when "GMT-0500" : -18000
+        when "GMT-0400" : -14400
+        when "GMT-0300" : -10800
+        when "GMT-0200" : -7200
+        when "GMT-0100" : -3600
+        when "UTC/GMT"  : 0
+        when "GMT+0100" : 3600
+        when "GMT+0200" : 7200
+        when "GMT+0300" : 10800
+        when "GMT+0400" : 14400
+        when "GMT+0500" : 18000
+        when "GMT+0600" : 21600
+        when "GMT+0700" : 25200
+        when "GMT+0800" : 28800
+        when "GMT+0900" : 32400
+        when "GMT+1000" : 36000
+        when "GMT+1100" : 39600
+        when "GMT+1200" : 43200
+      end
+      
+      # Offsets the starttime
+      timAdjusted = timZuluTime + intOffset
+      
+      # and builds the final Time string
+      if strTZOffset != "UTC/GMT" then
+        strRunSummaryTime = timAdjusted.xmlschema.chop + strTZOffset[3..5] + ":00"
+      else
+        strRunSummaryTime = timAdusted.xmlschema
+      end
 
       # Takes Total Time in Seconds, Calories and TotalDistance from Garmin data
       numTotalTimeSeconds = 0.0
@@ -123,15 +167,35 @@ class MainController < ApplicationController
       strTemplateID = params[:TemplateID]  # Put your template ID here
       strTemplateName = params[:TemplateName]   # I am always using basic for this script
       strEmpedID = params[:EmpedID]     # Put your EMPED ID here
-      strWeight = params[:Weight]          # Put your actual weight here
+      strWeightUnits = params[:WeightUnits] # Gets WeightUnits from the UI
+      
+      fltWeightAdjust = case strWeightUnits
+        when "kg" : 1
+        when "lb" : 0.45359237
+      end
+        
+      strWeight = "%.1f" % (params[:Weight].to_f * fltWeightAdjust)  # Calculates weight in kg with 1 decimal place
 
       # Gets the device identifier
       if root.elements["Activities/Activity/Creator/Name"] != nil then
-        # Gets the Creator Name from the Garmin XML
-        strDevice = root.elements["Activities/Activity/Creator/Name"].text + " - Converted by 7runs.com"
+        if root.elements["Activities/Activity/Creator/Name"].text != nil then
+          # Gets the Creator Name from the Garmin XML
+          strDevice = root.elements["Activities/Activity/Creator/Name"].text + " - Converted by 7runs.com"
+        else
+          #  Device Name element is empty
+          if params[:DeviceName] == "" or params[:DeviceName] == nil then
+            strDevice = "Unknown Garmin Device - Converted by 7runs.com"
+          else
+            strDevice = params[:DeviceName] + " - Converted by 7runs.com"
+          end
+        end
       else
-        # Unknown Garmin Device
-        strDevice = "Unknown Garmin Device - Converted by 7runs.com"
+        # No Device Name element
+        if params[:DeviceName] == "" or params[:DeviceName] == nil then
+          strDevice = "Unknown Garmin Device - Converted by 7runs.com"
+        else
+          strDevice = params[:DeviceName] + " - Converted by 7runs.com"
+        end
       end
 
       strCalibration = params[:Calibration]   # Calibration data from a valid iPod XML
@@ -353,8 +417,6 @@ timFile.min, timFile.sec]
       filename = strFileName
       response.headers['Content-disposition'] = "Attachment; filename=\"#{filename}\""
       render :text => output.to_s
-
-
 
       #outputFile = File.new(strFileName, "w+")
       #outputFile << output
