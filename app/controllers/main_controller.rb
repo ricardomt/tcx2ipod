@@ -38,6 +38,7 @@ class MainController < ApplicationController
   # 2008-12-03 - Included handler for empty device name information on TCX (Ascent Export)
   # 2008-12-07 - Fixed issue #1 (Unknown device name) - for both "no device name" and "device name element empty" scenarios
   # 2008-12-07 - Fixed issues #2 (Timestamps discrepancies) and #3 (Weight conversion issue)
+  # 2008-12-11 - Fixed issue #6 - GMT/UTC time offset error
   
   def upload
     uploaded_file = params[:TcxFile]
@@ -94,7 +95,7 @@ class MainController < ApplicationController
       if strTZOffset != "UTC/GMT" then
         strRunSummaryTime = timAdjusted.xmlschema.chop + strTZOffset[3..5] + ":00"
       else
-        strRunSummaryTime = timAdusted.xmlschema
+        strRunSummaryTime = timAdjusted.xmlschema
       end
 
       # Takes Total Time in Seconds, Calories and TotalDistance from Garmin data
