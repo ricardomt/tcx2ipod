@@ -39,6 +39,8 @@ class MainController < ApplicationController
   # 2008-12-07 - Fixed issue #1 (Unknown device name) - for both "no device name" and "device name element empty" scenarios
   # 2008-12-07 - Fixed issues #2 (Timestamps discrepancies) and #3 (Weight conversion issue)
   # 2008-12-11 - Fixed issue #6 - GMT/UTC time offset error
+  # 2008-12-26 - Fixed issue #7 - Miles versus Kilometers discrepancy on runSummary
+  # 2008-12-26 - Fixed issue #5 - Playlist not visible in Runner+
   
   def upload
     uploaded_file = params[:TcxFile]
@@ -300,8 +302,8 @@ class MainController < ApplicationController
       eleRunSummary.elements["duration"].text = strRunSummaryDuration
       eleRunSummary.add_element("durationString")
       eleRunSummary.elements["durationString"].text = strDurationString
-      eleRunSummary.add_element("distance", { "unit" => strDistanceUnit })
-      eleRunSummary.elements["distance"].text = strDistance
+      eleRunSummary.add_element("distance", { "unit" => "km" })                         # Distance VALUES on runSummary is always in km
+      eleRunSummary.elements["distance"].text = "%.04f" % (numTotalDistance / 1000)      # Value in km (strings are in mi or km)
       eleRunSummary.add_element("distanceString")
       eleRunSummary.elements["distanceString"].text = strDistanceString
       eleRunSummary.add_element("pace")
@@ -312,7 +314,7 @@ class MainController < ApplicationController
       eleRunSummary.add_element("playlistList")
       eleRunSummary.elements["playlistList"].add_element("playlist")
       eleRunSummary.elements["playlistList"].elements["playlist"].add_element("playlistName")
-      eleRunSummary.elements["playlistList"].elements["playlist"].elements["playlistName"].text = strPlaylistName
+      eleRunSummary.elements["playlistList"].elements["playlist"].elements["playlistName"].text = CData.new(strPlaylistName)
       eleRunSummary.add_element("stepCounts")
       eleStepCounts = eleRunSummary.elements["stepCounts"]
       eleStepCounts.add_element("walkBegin")
