@@ -1,5 +1,5 @@
 body {
-	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-family: Lucida Grande, Arial, Helvetica, sans-serif;
 	background: #eeeeee;
 	font-size: 12px;
 	color: #000000;	
@@ -57,7 +57,7 @@ li {
 	color: #000000;
 	list-style-type: circle;
 	list-style-position: outside;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Lucida Grande, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	padding-bottom: 5px;
 }
