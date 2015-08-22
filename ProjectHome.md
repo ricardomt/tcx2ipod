@@ -1,0 +1,3 @@
+This Ruby on Rails application was created to bridge the gap between Garmin Forerunner users and the Runnerplus.com website. Runnerplus.com is the best social network for runners around but it currently just takes workout data from the iPod's Nike+ application.
+
+The controller main\_controller.rb does all the job of converting the TCX (which is also an XML file) into the iPod-compatible XML, so Garmin users can upload their workouts to Runnerplus.com
